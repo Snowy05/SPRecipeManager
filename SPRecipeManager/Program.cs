@@ -1,4 +1,7 @@
-﻿namespace SPRecipeManager
+﻿using System;
+using System.Collections.Generic;
+
+namespace SPRecipeManager
 {
     internal class Program
     {
