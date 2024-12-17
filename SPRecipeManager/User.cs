@@ -8,14 +8,16 @@ using System.Threading.Tasks;
 
 namespace SPRecipeManager
 {
-    internal class Users
+    public class User
     {
         public string Username {  get; set; }
         public string Password { get; set; }
 
         public bool IsAdmin { get; set; }
 
-        public Users (string username, string password, bool isAdmin)
+        public RecipeManager UserRecipes { get; set; } = new RecipeManager();
+
+        public User (string username, string password, bool isAdmin)
         {
             Username = username;
             Password = PasswordHashMethod(password);
@@ -45,15 +47,42 @@ namespace SPRecipeManager
         }
 
         //Admin inherits from the "General User"
-        public class Admin : Users
-        {
-            public List<Users> Users { get; private set; } = new List<Users>();
-            public Admin(string username, string password) : base(username, password, true) { }
+    }
 
-            public void AddNewUser(Users user)
+    public class Admin : User
+    {
+        public List<User> Users { get; private set; } = new List<User>();
+        public Admin(string username, string password) : base(username, password, true) { }
+        public void AddNewUser(User user)
+        {
+            Users.Add(user);
+        }
+
+        public void RemoveUser(User user) { }
+
+        public User GetUser(string username)
+        {
+            return Users.Find(un => un.Username == username);
+        }
+
+        public void SaveUsersToFile()
+        {
+            try
             {
-                Users.Add(user);
+                using (StreamWriter writer = new StreamWriter("users.txt"))
+                {
+                    foreach (var user in Users)
+                    {
+                        writer.WriteLine($"{user.Username}|{user.Password}|{user.IsAdmin}");
+                    }
+                }
+                Console.WriteLine("Users saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving users: {ex.Message}");
             }
         }
+
     }
 }

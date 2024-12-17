@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPRecipeManager
 {
-    internal class Recipe
+    public class Recipe
     {
         public int RecipeNumber { get; set; }
         public string RecipeName { get; set; }
@@ -20,6 +20,7 @@ namespace SPRecipeManager
             RecipeName = recipeName;
             Ingridients = ingridients;
             Instructions = instructions;
+            //Create global recipes for guests they can look for recipes for that exact name, lets say 1000 recipes and use CACHE in order to save memory
         }
     }
 }
