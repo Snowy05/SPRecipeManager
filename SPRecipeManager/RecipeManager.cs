@@ -8,23 +8,95 @@ namespace SPRecipeManager
 {
     public class RecipeManager
     {
-
-        private Dictionary<string, Recipe> recipes = new Dictionary<string, Recipe>();
+        private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();
         private int nextRecipeNumber = 1;
-    
-        //public void DisplayRecipe(int recipeNumber)
-        //{   
-        //    if (recipes.TryGetValue(recipeNumber, out var recipe))
-        //    {
-        //        Console.Clear();
-        //        Console.WriteLine($"Recipe {recipe.RecipeNumber}): {recipe.RecipeName}");
-        //        Console.WriteLine($"Ingredients: {string.Join(", ", recipe.Ingridients)}");
-        //        Console.WriteLine($"Instructions: {recipe.Instructions}");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Recipe not found.");
-        //    }
-        //}
+
+        public void AddRecipe(string name, List<string> ingredients, string instructions)
+        {
+            Recipe recipe = new Recipe(nextRecipeNumber++, name, ingredients, instructions);
+            recipes.Add(recipe.RecipeNumber, recipe);
+        }
+
+        //Displaying the recipe
+        public void DisplayAllRecipeNames()
+        {
+            Console.Clear();
+                foreach (var recipe in recipes.Values)
+                {
+                    Console.WriteLine($"Recipe #{recipe.RecipeNumber}: {recipe.RecipeName}");
+                }
+        }
+        public Recipe GetRecipe(int recipeNumber)
+        {
+            recipes.TryGetValue(recipeNumber, out var recipe);
+            return recipe;
+        }
+        public void DisplayRecipe(int recipeNumber)
+        {
+            if (recipes.TryGetValue(recipeNumber, out var recipe))
+            {
+                Console.Clear();
+                Console.WriteLine($"Recipe :{recipe.RecipeNumber}: {recipe.RecipeName}");
+                Console.WriteLine($"Ingredients: {string.Join(", ", recipe.Ingredients)}");
+                Console.WriteLine($"Instructions: {recipe.Instructions}");
+            }
+            else
+            {
+                Console.WriteLine("Recipe not found.");
+            }
+        }
+
+
+        //Saving and Loading Recipes(Global)
+        public void SaveToFile(string filename = "recipes.txt")
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filename))
+                {
+                    foreach (var recipe in recipes.Values)
+                    {
+                        writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{string.Join(",", recipe.Ingredients)}|{recipe.Instructions}");
+                    }
+                }
+                Console.WriteLine("Recipes saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving recipes: {ex.Message}");
+            }
+        }
+
+        public void LoadFromFile(string filename = "recipes.txt")
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(filename))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var parts = line.Split('|');
+                        int recipeNumber = int.Parse(parts[0]);
+                        string recipeName = parts[1];
+                        List<string> ingredients = new List<string>(parts[2].Split(','));
+                        string instructions = parts[3];
+
+                        recipes.Add(recipeNumber, new Recipe(recipeNumber, recipeName, ingredients, instructions));
+                    }
+
+                    if (recipes.Count > 0)
+                    {
+                        nextRecipeNumber = recipes.Keys.Max() + 1;
+                    }
+                }
+                Console.WriteLine("Recipes loaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading recipes: {ex.Message}");
+            }
+        }
+
     }
 }

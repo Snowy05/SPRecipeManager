@@ -65,6 +65,7 @@ namespace SPRecipeManager
             return Users.Find(un => un.Username == username);
         }
 
+        //Saving Users
         public void SaveUsersToFile()
         {
             try
@@ -83,6 +84,17 @@ namespace SPRecipeManager
                 Console.WriteLine($"Error saving users: {ex.Message}");
             }
         }
+        //Saving and Loading Recipes(PerUser)
+        public void LoadRecipes()
+        {
+            string filename = $"{Username}_recipes.txt";
+            UserRecipes.LoadFromFile(filename);
+        }
 
+        public void SaveRecipes()
+        {
+            string filename = $"{Username}_recipes.txt";
+            UserRecipes.SaveToFile(filename);
+        }
     }
 }

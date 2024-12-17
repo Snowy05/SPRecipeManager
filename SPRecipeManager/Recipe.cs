@@ -10,17 +10,16 @@ namespace SPRecipeManager
     {
         public int RecipeNumber { get; set; }
         public string RecipeName { get; set; }
-        public List<Recipe> Ingridients { get; set; }
-
+        public List<string> Ingredients { get; set; }
         public string Instructions { get; set; }
 
-        public Recipe (int recipeNumber, string recipeName, List<Recipe> ingridients, string instructions)
+        public Recipe(int recipeNumber, string recipeName, List<string> ingredients, string instructions)
         {
             RecipeNumber = recipeNumber;
             RecipeName = recipeName;
-            Ingridients = ingridients;
+            Ingredients = ingredients;
             Instructions = instructions;
-            //Create global recipes for guests they can look for recipes for that exact name, lets say 1000 recipes and use CACHE in order to save memory
         }
     }
+
 }

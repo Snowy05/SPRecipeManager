@@ -9,6 +9,8 @@ namespace SPRecipeManager
     {
         static Admin admin = new Admin("admin", "adminpass");
         static User currentUser;
+        static RecipeManager globalRecipes = new RecipeManager();
+
         static void Main(string[] args)
         {
             bool loginRun = true;
@@ -125,7 +127,70 @@ namespace SPRecipeManager
 
         static void CallUserMenu()
         {
+            Console.Clear();
+            Console.WriteLine($" Welcome, {currentUser.Username}!");
+            Console.WriteLine(" 1)Add a new recipe");
+            Console.WriteLine(" 2) View all recipes");
+            Console.WriteLine(" 3) View your recipes");
+            Console.WriteLine(" 4) Remove a recipe");
+            Console.WriteLine(" 6) View shopping list");
+            Console.WriteLine(" 7) Search recipes");
+            Console.WriteLine(" 8) Manage users (Admin)");
+            Console.WriteLine(" 9) Logout");
 
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    Console.WriteLine();
+                    break;
+                case "2": 
+                    Console.WriteLine();
+                    break;
+                case "3":
+                    Console.WriteLine();
+                    break;
+                case "4":
+                    Console.WriteLine();
+                    break;
+                case "5":
+                    Console.WriteLine();
+                    break;
+                case "6":
+                    Console.WriteLine();
+                    break;
+                case "7":
+                    Console.WriteLine();
+                    break;
+                case "8":
+                    Console.WriteLine();
+                    break;
+                case "9":
+                    Console.WriteLine();
+                    break;
+                default: 
+                    Console.WriteLine("Please select a valid option!");
+                    break;
+            }
+            static void AddRecipe(RecipeManager recipeManager)
+            {
+                Console.Write("Enter recipe name: ");
+                string name = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    Console.Write("Enter recipe ingredients (comma-separated): ");
+                    List<string> ingredients = new List<string>(Console.ReadLine().Split(','));
+
+                    Console.Write("Enter recipe instructions: ");
+                    string instructions = Console.ReadLine();
+                    recipeManager.AddRecipe(name, ingredients, instructions);
+
+                    Console.WriteLine("Recipe added successfully!");
+                }
+                else Console.WriteLine("Please fill out the the name of the recipe!");
+
+                Console.ReadKey();
+            }
         }
     }
 }
