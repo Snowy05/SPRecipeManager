@@ -11,8 +11,20 @@ namespace SPRecipeManager
         static User currentUser;
         static RecipeManager globalRecipes = new RecipeManager();
 
+
         static void Main(string[] args)
         {
+            admin.LoadUsersFromFile();
+
+            try
+            {
+                globalRecipes.LoadFromFile("global_recipes.txt");
+                Console.WriteLine("Global recipes loaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading global recipes: {ex.Message}");
+            }
             bool loginRun = true;
 
             while (loginRun)
@@ -129,50 +141,74 @@ namespace SPRecipeManager
         {
             Console.Clear();
             Console.WriteLine($" Welcome, {currentUser.Username}!");
-            Console.WriteLine(" 1)Add a new recipe");
-            Console.WriteLine(" 2) View all recipes");
-            Console.WriteLine(" 3) View your recipes");
-            Console.WriteLine(" 4) Remove a recipe");
-            Console.WriteLine(" 6) View shopping list");
-            Console.WriteLine(" 7) Search recipes");
-            Console.WriteLine(" 8) Manage users (Admin)");
-            Console.WriteLine(" 9) Logout");
+            Console.WriteLine(" 1) View all recipes");
+            Console.WriteLine(" 2) View your recipes");
+            Console.WriteLine(" 3) View shopping list");
+            Console.WriteLine(" 4) Logout");
 
             switch (Console.ReadLine())
             {
                 case "1":
                     Console.WriteLine();
                     break;
-                case "2": 
-                    Console.WriteLine();
+                case "2":
+                    AllUserRecipes(currentUser.UserRecipes);
                     break;
                 case "3":
-                    Console.WriteLine();
+                    //CallShoppingList(shoppingList);
                     break;
                 case "4":
-                    Console.WriteLine();
-                    break;
-                case "5":
-                    Console.WriteLine();
-                    break;
-                case "6":
-                    Console.WriteLine();
-                    break;
-                case "7":
-                    Console.WriteLine();
-                    break;
-                case "8":
-                    Console.WriteLine();
-                    break;
-                case "9":
-                    Console.WriteLine();
                     break;
                 default: 
                     Console.WriteLine("Please select a valid option!");
                     break;
             }
+
+            static void AllUserRecipes(RecipeManager recipeManager)
+            {
+                Console.Clear();
+                Console.WriteLine("All Recipes:");
+                foreach (var recipe in recipeManager.GetAllRecipes())
+                {
+                    Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
+                }
+                Console.WriteLine("What Would you like to do?");
+                Console.WriteLine(" 1) Add a new recipe");
+                Console.WriteLine(" 2) Delete a recipe");
+                Console.WriteLine(" 3) View a recipe");
+                Console.WriteLine(" 5) Search Recipe");
+                Console.WriteLine(" 6) Go back");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+
+                        AddRecipe(currentUser.UserRecipes);
+                        break;
+                    case "2":
+                        Console.WriteLine();
+                        break;
+                    case "3":
+                        Console.WriteLine();
+                        break;
+                    case "4":
+                        Console.WriteLine();
+                        break;
+                    case "5":
+                        SearchRecipes(currentUser.UserRecipes);
+                        break;
+                    case "6":
+                        Console.WriteLine();
+                        break;
+                    default:
+                        Console.WriteLine("Select a valid option!");
+                        break;
+                }
+
+            }
             static void AddRecipe(RecipeManager recipeManager)
             {
+                Console.Clear();
                 Console.Write("Enter recipe name: ");
                 string name = Console.ReadLine();
 
@@ -189,6 +225,27 @@ namespace SPRecipeManager
                 }
                 else Console.WriteLine("Please fill out the the name of the recipe!");
 
+                Console.ReadKey();
+            }
+            static void SearchRecipes(RecipeManager recipeManager)
+            {
+                Console.Write("Enter a keyword to search for recipes: ");
+                string query = Console.ReadLine();
+
+                var results = recipeManager.SearchRecipes(query);
+
+                if (results.Any())
+                {
+                    Console.WriteLine("Search Results:");
+                    foreach (var recipe in results)
+                    {
+                        Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.Name}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No recipes found matching your search.");
+                }
                 Console.ReadKey();
             }
         }

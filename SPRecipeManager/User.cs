@@ -84,6 +84,25 @@ namespace SPRecipeManager
                 Console.WriteLine($"Error saving users: {ex.Message}");
             }
         }
+        public void LoadUsersFromFile()
+        {
+            if (File.Exists("users.txt"))
+            {
+                using (StreamReader reader = new StreamReader("users.txt"))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var parts = line.Split('|');
+                        string username = parts[0];
+                        string hashedPassword = parts[1];
+                        bool isAdmin = bool.Parse(parts[2]);
+
+                        Users.Add(new User(username, hashedPassword, isAdmin));
+                    }
+                }
+            }
+        }
         //Saving and Loading Recipes(PerUser)
         public void LoadRecipes()
         {

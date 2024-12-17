@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPRecipeManager
 {
+    //Can do Allergy option User type in allergy, look for it and sort out recipes based on allergy
     public class RecipeManager
     {
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();
@@ -15,6 +16,11 @@ namespace SPRecipeManager
         {
             Recipe recipe = new Recipe(nextRecipeNumber++, name, ingredients, instructions);
             recipes.Add(recipe.RecipeNumber, recipe);
+        }
+
+        public List<Recipe> GetAllRecipes()
+        {
+            return recipes.Values.ToList();
         }
 
         //Displaying the recipe
@@ -45,7 +51,15 @@ namespace SPRecipeManager
                 Console.WriteLine("Recipe not found.");
             }
         }
+        public List<Recipe> SearchRecipes(string query)
+        {
+            var results = recipes.Values
+                .Where(r => r.RecipeName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                            r.Ingredients.Any(i => i.Contains(query, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
+            return results;
+        }
 
         //Saving and Loading Recipes(Global)
         public void SaveToFile(string filename = "recipes.txt")
