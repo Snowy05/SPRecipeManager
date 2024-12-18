@@ -9,12 +9,13 @@ namespace SPRecipeManager
     {
         static Admin admin = new Admin("admin", "adminpass");
         static User currentUser;
-        static RecipeManager globalRecipes = new RecipeManager();
+        //static RecipeManager globalRecipes = new RecipeManager();
 
 
         static void Main(string[] args)
         {
             admin.LoadUsersFromFile();
+
 
             //try
             //{
@@ -75,15 +76,17 @@ namespace SPRecipeManager
             Console.WriteLine("Enter your password:");
             string password = Console.ReadLine();
             Console.WriteLine("=========================");
-            currentUser = admin.GetUser(username);
+
+            currentUser = admin.GetUser(username); 
 
             if (currentUser != null && currentUser.PasswordVerification(password))
             {
-                Console.WriteLine($"Welcome,{username}");
+                currentUser.LoadRecipes();
+                Console.WriteLine($"Welcome, {username}");
             }
             else
             {
-                Console.WriteLine("Incorrect username or password!"); 
+                Console.WriteLine("Incorrect username or password!");
                 currentUser = null;
             }
         }
@@ -104,7 +107,7 @@ namespace SPRecipeManager
 
                     if (PasswordChecker.IsPasswordStrong(password))
                     {
-                        var newUser = new User(username, password, false); 
+                        var newUser = new User(username, password, false);
                         admin.AddNewUser(newUser);
                         Console.WriteLine($"User: {username} registered successfully.");
                     }
@@ -128,9 +131,8 @@ namespace SPRecipeManager
                 Console.WriteLine("=========================");
                 Console.WriteLine("Username cannot be empty.");
             }
-
-
         }
+
         static void CallAdminMenu()
         {
 

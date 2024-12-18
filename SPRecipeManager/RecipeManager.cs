@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace SPRecipeManager
 {
     //Can do Allergy option User type in allergy, look for it and sort out recipes based on allergy
+    //Can do caching with global recipes and users can contribute to recipes request it to be posted by admin. 
+    //Method needed to filter out recipes curse word
     public class RecipeManager
     {
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();

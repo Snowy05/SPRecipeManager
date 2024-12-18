@@ -10,25 +10,31 @@ namespace SPRecipeManager
 {
     public class User
     {
-        public string Username {  get; set; }
-        public string Password { get; set; }
-
+        public string Username { get; set; }
+        public string Password { get; set; } // This will store the hashed password
         public bool IsAdmin { get; set; }
-
         public RecipeManager UserRecipes { get; set; } = new RecipeManager();
 
-        public User (string username, string password, bool isAdmin)
+        // Constructor for creating a new user (hashes the password)
+        public User(string username, string password, bool isAdmin)
         {
             Username = username;
             Password = PasswordHashMethod(password);
             IsAdmin = isAdmin;
         }
 
-        //Hashing the given password to make safer in the text file
+        // Constructor for loading user from file (uses already hashed password)
+        public User(string username, string hashedPassword, bool isAdmin, bool isHashedPassword)
+        {
+            Username = username;
+            Password = isHashedPassword ? hashedPassword : PasswordHashMethod(hashedPassword);
+            IsAdmin = isAdmin;
+        }
+
+        // Hashing the given password to make it safer in the text file
         private string PasswordHashMethod(string password)
         {
-
-          using (SHA256 sha256Pass = SHA256.Create())
+            using (SHA256 sha256Pass = SHA256.Create())
             {
                 byte[] bytes = sha256Pass.ComputeHash(Encoding.UTF8.GetBytes(password));
                 StringBuilder builder = new StringBuilder();
@@ -40,12 +46,13 @@ namespace SPRecipeManager
             }
         }
 
-        public bool PasswordVerification (string password)
+        public bool PasswordVerification(string password)
         {
             string passwordVerify = PasswordHashMethod(password);
             return Password == passwordVerify;
         }
-        //Saving and Loading Recipes(PerUser)
+
+        // Saving and Loading Recipes (Per User)
         public void LoadRecipes()
         {
             string filename = $"{Username}_recipes.txt";
@@ -57,13 +64,14 @@ namespace SPRecipeManager
             string filename = $"{Username}_recipes.txt";
             UserRecipes.SaveToFile(filename);
         }
-        //Admin inherits from the "General User"
     }
 
     public class Admin : User
     {
         public List<User> Users { get; private set; } = new List<User>();
+
         public Admin(string username, string password) : base(username, password, true) { }
+
         public void AddNewUser(User user)
         {
             Users.Add(user);
@@ -77,7 +85,7 @@ namespace SPRecipeManager
             return Users.Find(un => un.Username == username);
         }
 
-        //Saving Users
+        // Saving Users
         public void SaveUsersToFile()
         {
             try
@@ -96,6 +104,7 @@ namespace SPRecipeManager
                 Console.WriteLine($"Error saving users: {ex.Message}");
             }
         }
+
         public void LoadUsersFromFile()
         {
             if (File.Exists("users.txt"))
@@ -106,15 +115,29 @@ namespace SPRecipeManager
                     while ((line = reader.ReadLine()) != null)
                     {
                         var parts = line.Split('|');
-                        string username = parts[0];
-                        string hashedPassword = parts[1];
-                        bool isAdmin = bool.Parse(parts[2]);
 
-                        Users.Add(new User(username, hashedPassword, isAdmin));
+                        // Add check to ensure we have the correct number of parts
+                        if (parts.Length == 3)
+                        {
+                            string username = parts[0];
+                            string hashedPassword = parts[1];
+                            bool isAdmin = bool.Parse(parts[2]);
+
+                            Users.Add(new User(username, hashedPassword, isAdmin, true));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid line format: " + line);
+                        }
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine("User file not found.");
             }
         }
 
     }
+
 }
