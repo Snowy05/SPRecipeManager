@@ -14,7 +14,7 @@ namespace SPRecipeManager
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();
         private int nextRecipeNumber = 1;
 
-        
+
 
         public List<Recipe> GetAllRecipes()
         {
@@ -25,10 +25,10 @@ namespace SPRecipeManager
         public void DisplayAllRecipeNames()
         {
             Console.Clear();
-                foreach (var recipe in recipes.Values)
-                {
-                    Console.WriteLine($"Recipe #{recipe.RecipeNumber}: {recipe.RecipeName}");
-                }
+            foreach (var recipe in recipes.Values)
+            {
+                Console.WriteLine($"Recipe #{recipe.RecipeNumber}: {recipe.RecipeName}");
+            }
         }
         public Recipe GetRecipe(int recipeNumber)
         {
@@ -59,66 +59,55 @@ namespace SPRecipeManager
             recipes.Remove(recipeNumber);
         }
 
-        public List<Recipe> SearchRecipes(string query)
+        public List<Recipe> SearchRecipes(string getrecipes)
         {
             var results = recipes.Values
-                .Where(r => r.RecipeName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                            r.Ingredients.Any(i => i.Contains(query, StringComparison.OrdinalIgnoreCase)))
+                .Where(r => r.RecipeName.Contains(getrecipes, StringComparison.OrdinalIgnoreCase) ||
+                            r.Ingredients.Any(i => i.Contains(getrecipes, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
             return results;
         }
 
-        //Saving and Loading Recipes(Global)
-        public void SaveToFile(string filename = "recipes.txt")
+        public void SaveToFile(string fileName = "recipes.txt")
         {
-            try
+            using (StreamWriter writer = new StreamWriter(fileName))
             {
-                using (StreamWriter writer = new StreamWriter(filename))
+                foreach (var recipe in recipes.Values)
                 {
-                    foreach (var recipe in recipes.Values)
-                    {
-                        writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{string.Join(",", recipe.Ingredients)}|{recipe.Instructions}");
-                    }
+                    writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{string.Join(",", recipe.Ingredients)}|{recipe.Instructions}");
                 }
-                Console.WriteLine("Recipes saved successfully.");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving recipes: {ex.Message}");
-            }
+            Console.WriteLine("Recipes saved successfully.");
         }
 
-        public void LoadFromFile(string filename = "recipes.txt")
+
+
+        public void LoadFromFile(string fileName = "recipes.txt")
         {
-            try
+
+            using (StreamReader reader = new StreamReader(fileName))
             {
-                using (StreamReader reader = new StreamReader(filename))
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var parts = line.Split('|');
-                        int recipeNumber = int.Parse(parts[0]);
-                        string recipeName = parts[1];
-                        List<string> ingredients = new List<string>(parts[2].Split(','));
-                        string instructions = parts[3];
+                    var parts = line.Split('|');
+                    int recipeNumber = int.Parse(parts[0]);
+                    string recipeName = parts[1];
+                    List<string> ingredients = new List<string>(parts[2].Split(','));
+                    string instructions = parts[3];
 
-                        recipes.Add(recipeNumber, new Recipe(recipeNumber, recipeName, ingredients, instructions));
-                    }
-
-                    if (recipes.Count > 0)
-                    {
-                        nextRecipeNumber = recipes.Keys.Max() + 1;
-                    }
+                    recipes.Add(recipeNumber, new Recipe(recipeNumber, recipeName, ingredients, instructions));
                 }
-                Console.WriteLine("Recipes loaded successfully.");
+
+                if (recipes.Count > 0)
+                {
+                    nextRecipeNumber = recipes.Keys.Max() + 1;
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading recipes: {ex.Message}");
-            }
+            Console.WriteLine("Recipes loaded successfully.");
         }
+
 
     }
 }

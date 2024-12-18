@@ -169,7 +169,7 @@ namespace SPRecipeManager
             Console.ReadKey();
         }
 
-        //Legged in user menu  
+        //Logged in user menu  
         static void CallUserMenu()
         {
             Console.Clear();
@@ -200,7 +200,7 @@ namespace SPRecipeManager
                     Console.WriteLine("Please select a valid option!");
                     break;
             }
-
+            //General methods for user menu
             static void AllUserRecipes(RecipeManager recipeManager)
             {
                 Console.Clear();
@@ -252,7 +252,7 @@ namespace SPRecipeManager
                 Console.Clear();
                 Console.Write("Enter recipe name: ");
                 string name = Console.ReadLine();
-
+                //New recipe add
                 if (!string.IsNullOrEmpty(name))
                 {
                     Console.Write("Enter recipe ingredients (comma-separated): ");
@@ -270,6 +270,7 @@ namespace SPRecipeManager
             }
             static void RemoveUserRecipe(RecipeManager recipeManager)
             {
+                //Existing recipe remove by the number
                 foreach (var recipe in recipeManager.GetAllRecipes())
                 {
                     Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
@@ -292,7 +293,7 @@ namespace SPRecipeManager
                 string getAllRecipes = Console.ReadLine();
 
                 var results = recipeManager.SearchRecipes(getAllRecipes);
-
+                //Look up/Search recipes with key word
                 if (results.Any())
                 {
                     Console.Clear();
@@ -311,6 +312,7 @@ namespace SPRecipeManager
                 }
                 Console.ReadKey();
 
+                //Recipe display
                 static void ViewRecipeDetails(RecipeManager recipeManager)
                 {
                     Console.Write("Enter the recipe number to view details");
@@ -326,11 +328,12 @@ namespace SPRecipeManager
             static void CallLogout()
             {
                 Console.Clear();
-                currentUser.SaveRecipes();
                 currentUser = null;
                 Console.WriteLine("Logged out successfully.");
             }
         }
+
+        //Admin Menu
         static void CallAdminMenu()
         {
             bool adminRun = true;
@@ -355,7 +358,7 @@ namespace SPRecipeManager
                         Console.ReadKey();
                         break;
                     case "3":
-                        admin.ReviewRecipeRequests(globalRecipes); 
+                        admin.FunctionReviewRecipeRequests(globalRecipes); 
                         Console.WriteLine("Press any key to return to the admin menu..."); 
                         Console.ReadKey();
                         break ;
@@ -369,6 +372,7 @@ namespace SPRecipeManager
                         break;
                 }
             }
+            //Admin Functions
             static void AdminFunctionAddUser()
             {
                 Console.Clear();
@@ -381,11 +385,11 @@ namespace SPRecipeManager
                     {
                         Console.WriteLine("Enter password:");
                         string password = Console.ReadLine();
-
-                        if (!string.IsNullOrEmpty(password))
+                        
+                        if (!string.IsNullOrEmpty(password))//Admin should create whatever password they want. Weak or not.
                         {
                             Console.WriteLine("Is this user an admin? (yes/no):");
-                            string isUserAdmin = Console.ReadLine();
+                            string isUserAdmin = Console.ReadLine();//admin can create admin
 
                             bool isAdmin = isUserAdmin.Equals("yes");
 

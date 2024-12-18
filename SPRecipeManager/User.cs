@@ -110,7 +110,7 @@ namespace SPRecipeManager
             return Users.Find(un => un.Username == username);
         }
         //Admin Request Functions
-            public void ReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
+            public void FunctionReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
             {
                 var requests = globalRecipeManager.GetAllRecipeRequests();
                 if (requests.Count == 0)
