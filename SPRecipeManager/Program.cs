@@ -9,25 +9,26 @@ namespace SPRecipeManager
     {
         static Admin admin = new Admin("admin", "adminpass");
         static User currentUser;
-        //static RecipeManager globalRecipes = new RecipeManager();
-
+        static GlobalRecipeManager globalRecipes = new GlobalRecipeManager();
 
         static void Main(string[] args)
         {
+            //loading neccessary users and files
             admin.LoadUsersFromFile();
-
-
-            //try
-            //{
-            //    globalRecipes.LoadFromFile("global_recipes.txt");
-            //    Console.WriteLine("Global recipes loaded successfully.");
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"Error loading global recipes: {ex.Message}");
-            //}
+            string globalRecipesFileName = "global_recipes.txt";
+            try
+            {
+                globalRecipes.LoadRecipesFromFile(); 
+                globalRecipes.LoadRecipeRequestsFromFile(); 
+                Console.WriteLine("Global recipes and requests loaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading global recipes: {ex.Message}");
+            }
+            
             bool loginRun = true;
-
+            //Main loop for menu and global recipes
             while (loginRun)
             {
                 if (currentUser == null)
@@ -36,7 +37,8 @@ namespace SPRecipeManager
                         Console.WriteLine(" Please select an option:");
                         Console.WriteLine(" 1) Log-In ");
                         Console.WriteLine(" 2) Register ");
-                        Console.WriteLine(" 3) Exit" );
+                        Console.WriteLine(" 3) Global Recipes");
+                        Console.WriteLine(" 4) Exit" );
                         Console.WriteLine("=========================");
 
                     switch (Console.ReadLine())
@@ -47,7 +49,10 @@ namespace SPRecipeManager
                         case "2":
                             CallRegister();
                             break;
-                        case "3":   
+                        case "3":
+                            SearchGlobalRecipes();
+                            break;
+                        case "4":        
                             loginRun = false;
                             break;
                         default:
@@ -67,6 +72,8 @@ namespace SPRecipeManager
                 }
             }
         }
+
+        //Basic login method takes username and password, verifies them ex: Passwordverification
         static void CallLogin()
         {
             Console.Clear();
@@ -86,12 +93,13 @@ namespace SPRecipeManager
             }
             else
             {
+                Console.Clear();
                 Console.WriteLine("Incorrect username or password!");
                 currentUser = null;
             }
         }
 
-
+        //Method for user reg
         static void CallRegister()
         {
             Console.Clear();
@@ -104,8 +112,8 @@ namespace SPRecipeManager
                 {
                     Console.WriteLine("Enter your password:");
                     string password = Console.ReadLine();
-
-                    if (PasswordChecker.IsPasswordStrong(password))
+                    
+                    if (PasswordChecker.IsPasswordStrong(password)) // IsPasswordStrong see in PasswordChecker.cs
                     {
                         var newUser = new User(username, password, false);
                         admin.AddNewUser(newUser);
@@ -132,13 +140,42 @@ namespace SPRecipeManager
                 Console.WriteLine("Username cannot be empty.");
             }
         }
+        
+        //Searching for recipes matching the key word given
+        static void SearchGlobalRecipes()
+        {
+            Console.Clear();
+            Console.Write("Enter a keyword to search for recipes: ");
+            string keyword = Console.ReadLine();
 
+            var results = globalRecipes.SearchRecipes(keyword);
+
+            if (results.Any())
+            {
+                Console.Clear();
+                Console.WriteLine("=========================");
+                Console.WriteLine("Search Results:");
+                foreach (var recipe in results) //Results 
+                {
+                    Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
+                }
+                Console.WriteLine("=========================");
+            }
+            else
+            {
+                Console.WriteLine("No recipes found matching your search.");
+            }
+            Console.WriteLine("Press any key to return to the main menu...");
+            Console.ReadKey();
+        }
+
+        //Legged in user menu  
         static void CallUserMenu()
         {
             Console.Clear();
             Console.WriteLine("=========================");
             Console.WriteLine($" Welcome, {currentUser.Username}!");
-            Console.WriteLine(" 1) View all recipes");
+            Console.WriteLine(" 1) Submit Recipe Request"); 
             Console.WriteLine(" 2) View your recipes");
             Console.WriteLine(" 3) View shopping list");
             Console.WriteLine(" 4) Logout");
@@ -148,7 +185,7 @@ namespace SPRecipeManager
             switch (Console.ReadLine())
             {
                 case "1":
-                    Console.WriteLine();
+                    currentUser.SubmitRecipeRequest(globalRecipes); 
                     break;
                 case "2":
                     AllUserRecipes(currentUser.UserRecipes);
@@ -303,8 +340,9 @@ namespace SPRecipeManager
                 Console.WriteLine("=========================");
                 Console.WriteLine(" Admin Menu:");
                 Console.WriteLine(" 1) Add User ");
-                Console.WriteLine(" 2) List All Users ");
-                Console.WriteLine(" 3) Logout");
+                Console.WriteLine(" 2) List All Users");
+                Console.WriteLine(" 3) User Requests");
+                Console.WriteLine(" 4) Logout");
                 Console.WriteLine("=========================");
 
                 switch (Console.ReadLine())
@@ -317,6 +355,11 @@ namespace SPRecipeManager
                         Console.ReadKey();
                         break;
                     case "3":
+                        admin.ReviewRecipeRequests(globalRecipes); 
+                        Console.WriteLine("Press any key to return to the admin menu..."); 
+                        Console.ReadKey();
+                        break ;
+                    case "4":
                         currentUser = null;
                         adminRun = false;
                         break;

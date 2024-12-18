@@ -11,11 +11,11 @@ namespace SPRecipeManager
     public class User
     {
         public string Username { get; set; }
-        public string Password { get; set; } // This will store the hashed password
+        public string Password { get; set; } // This will store the password thats been hashed
         public bool IsAdmin { get; set; }
         public RecipeManager UserRecipes { get; set; } = new RecipeManager();
 
-        // Constructor for creating a new user (hashes the password)
+        // Constructor for new users with the already hashed password
         public User(string username, string password, bool isAdmin)
         {
             Username = username;
@@ -23,7 +23,7 @@ namespace SPRecipeManager
             IsAdmin = isAdmin;
         }
 
-        // Constructor for loading user from file (uses already hashed password)
+        // Constructor loading users from file
         public User(string username, string hashedPassword, bool isAdmin, bool isHashedPassword)
         {
             Username = username;
@@ -31,7 +31,7 @@ namespace SPRecipeManager
             IsAdmin = isAdmin;
         }
 
-        // Hashing the given password to make it safer in the text file
+        // Method for hashing the password as i store it in Plain text file
         private string PasswordHashMethod(string password)
         {
             using (SHA256 sha256Pass = SHA256.Create())
@@ -46,11 +46,31 @@ namespace SPRecipeManager
             }
         }
 
+        //Method to do given password == hashed password
         public bool PasswordVerification(string password)
         {
             string passwordVerify = PasswordHashMethod(password);
             return Password == passwordVerify;
         }
+
+        // Users submission method to Globalrecipies
+        public void SubmitRecipeRequest(GlobalRecipeManager globalRecipeManager)
+            {
+                Console.WriteLine("Enter the recipe name:");
+                string recipeName = Console.ReadLine();
+
+                Console.WriteLine("Enter the ingredients (comma-separated):");
+                List<string> ingredients = Console.ReadLine().Split(',').Select(ingredient => ingredient.Trim()).ToList();
+
+                Console.WriteLine("Enter the instructions:");
+                string instructions = Console.ReadLine();
+
+                var newRecipeRequest = new Recipe(globalRecipeManager.GetNextRecipeNumber(), recipeName, ingredients, instructions);
+                globalRecipeManager.AddRecipeRequest(newRecipeRequest);
+
+                Console.WriteLine("Recipe request submitted for admin approval.");
+            }
+
 
         // Saving and Loading Recipes (Per User)
         public void LoadRecipes()
@@ -72,6 +92,7 @@ namespace SPRecipeManager
 
         public Admin(string username, string password) : base(username, password, true) { }
 
+        //General Admin Functions
         public void AddNewUser(User user)
         {
             Users.Add(user);
@@ -88,8 +109,39 @@ namespace SPRecipeManager
         {
             return Users.Find(un => un.Username == username);
         }
+        //Admin Request Functions
+            public void ReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
+            {
+                var requests = globalRecipeManager.GetAllRecipeRequests();
+                if (requests.Count == 0)
+                {
+                    Console.WriteLine("No pending recipe requests.");
+                    return;
+                }
 
-        // Saving Users
+                foreach (var request in requests)
+                {
+                    Console.WriteLine($"Recipe {request.RecipeNumber}: {request.RecipeName}");
+                    Console.WriteLine($"Ingredients: {string.Join(", ", request.Ingredients)}");
+                    Console.WriteLine($"Instructions: {request.Instructions}");
+                    Console.WriteLine("Do you want to approve this recipe? (yes/no)");
+
+                    string response = Console.ReadLine();
+                    if (response.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                    {
+                        globalRecipeManager.ApproveRecipeRequest(request.RecipeNumber);
+                        Console.WriteLine("Recipe approved!");
+                    }
+                    else
+                    {
+                        globalRecipeManager.RejectRecipeRequest(request.RecipeNumber);
+                        Console.WriteLine("Recipe rejected.");
+                    }
+                }
+            }
+
+
+        // Saving Users and loading usres
         public void SaveUsersToFile()
         {
             try
