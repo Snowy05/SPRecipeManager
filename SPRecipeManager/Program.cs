@@ -140,11 +140,14 @@ namespace SPRecipeManager
         static void CallUserMenu()
         {
             Console.Clear();
+            Console.WriteLine("=========================");
             Console.WriteLine($" Welcome, {currentUser.Username}!");
             Console.WriteLine(" 1) View all recipes");
             Console.WriteLine(" 2) View your recipes");
             Console.WriteLine(" 3) View shopping list");
             Console.WriteLine(" 4) Logout");
+            Console.WriteLine("=========================");
+
 
             switch (Console.ReadLine())
             {
@@ -167,17 +170,21 @@ namespace SPRecipeManager
             static void AllUserRecipes(RecipeManager recipeManager)
             {
                 Console.Clear();
-                Console.WriteLine("All Recipes:");
-                foreach (var recipe in recipeManager.GetAllRecipes())
-                {
-                    Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
-                }
+                Console.WriteLine("=========================");
+       
                 Console.WriteLine("What Would you like to do?");
                 Console.WriteLine(" 1) Add a new recipe");
                 Console.WriteLine(" 2) Delete a recipe");
                 Console.WriteLine(" 3) View a recipe");
                 Console.WriteLine(" 5) Search Recipe");
                 Console.WriteLine(" 6) Go back");
+
+                Console.WriteLine("All Recipes:");
+                foreach (var recipe in recipeManager.GetAllRecipes())
+                {
+                    Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
+                }
+
 
                 switch (Console.ReadLine())
                 {
@@ -186,7 +193,7 @@ namespace SPRecipeManager
                         AddRecipe(currentUser.UserRecipes);
                         break;
                     case "2":
-                        Console.WriteLine();
+                        RemoveUserRecipe(currentUser.UserRecipes);
                         break;
                     case "3":
                         Console.WriteLine();
@@ -227,26 +234,60 @@ namespace SPRecipeManager
 
                 Console.ReadKey();
             }
+            static void RemoveUserRecipe(RecipeManager recipeManager)
+            {
+                foreach (var recipe in recipeManager.GetAllRecipes())
+                {
+                    Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
+                }
+                Console.Write("Enter recipe number to remove: ");
+                if (int.TryParse(Console.ReadLine(), out int recipeNumber))
+                {
+                    recipeManager.RemoveUserRecipe(recipeNumber);
+                    Console.WriteLine("Recipe removed successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid recipe number. Please try again.");
+                }
+                Console.ReadKey();
+            }
             static void SearchRecipes(RecipeManager recipeManager)
             {
                 Console.Write("Enter a keyword to search for recipes: ");
-                string query = Console.ReadLine();
+                string getAllRecipes = Console.ReadLine();
 
-                var results = recipeManager.SearchRecipes(query);
+                var results = recipeManager.SearchRecipes(getAllRecipes);
 
                 if (results.Any())
                 {
+                    Console.Clear();
+                    Console.WriteLine("=========================");
                     Console.WriteLine("Search Results:");
                     foreach (var recipe in results)
                     {
-                        Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.Name}");
+                        Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
                     }
+                    Console.WriteLine("=========================");
+                    ViewRecipeDetails(currentUser.UserRecipes);
                 }
                 else
                 {
                     Console.WriteLine("No recipes found matching your search.");
                 }
                 Console.ReadKey();
+
+                static void ViewRecipeDetails(RecipeManager recipeManager)
+                {
+                    Console.Write("Enter the recipe number to view details");
+                    string input = Console.ReadLine();
+
+                    if (int.TryParse(input, out int recipeNumber))
+                    {
+                        recipeManager.DisplayRecipe(recipeNumber);
+                    }
+                    Console.ReadKey();
+                }
             }
         }
     }

@@ -12,11 +12,7 @@ namespace SPRecipeManager
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();
         private int nextRecipeNumber = 1;
 
-        public void AddRecipe(string name, List<string> ingredients, string instructions)
-        {
-            Recipe recipe = new Recipe(nextRecipeNumber++, name, ingredients, instructions);
-            recipes.Add(recipe.RecipeNumber, recipe);
-        }
+        
 
         public List<Recipe> GetAllRecipes()
         {
@@ -51,6 +47,16 @@ namespace SPRecipeManager
                 Console.WriteLine("Recipe not found.");
             }
         }
+        public void AddRecipe(string name, List<string> ingredients, string instructions)
+        {
+            Recipe recipe = new Recipe(nextRecipeNumber++, name, ingredients, instructions);
+            recipes.Add(recipe.RecipeNumber, recipe);
+        }
+        public void RemoveUserRecipe(int recipeNumber)
+        {
+            recipes.Remove(recipeNumber);
+        }
+
         public List<Recipe> SearchRecipes(string query)
         {
             var results = recipes.Values
