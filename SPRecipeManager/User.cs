@@ -138,6 +138,17 @@ namespace SPRecipeManager
             }
         }
 
-    }
+        public void AdminFunctionListAllUsers()
+        {
+            Console.Clear();
+            Console.WriteLine("=============================");
+            Console.WriteLine(" All users:");
+            foreach (var user in Users)
+            {
+                Console.WriteLine($"Username: {user.Username}, Admin: {user.IsAdmin}");
+            }
+            Console.WriteLine("=============================");
+        }
 
+    }
 }

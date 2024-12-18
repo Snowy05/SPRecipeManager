@@ -133,12 +133,6 @@ namespace SPRecipeManager
             }
         }
 
-        static void CallAdminMenu()
-        {
-
-
-        }
-
         static void CallUserMenu()
         {
             Console.Clear();
@@ -300,5 +294,100 @@ namespace SPRecipeManager
                 Console.WriteLine("Logged out successfully.");
             }
         }
+        static void CallAdminMenu()
+        {
+            bool adminRun = true;
+            while (adminRun)
+            {
+                Console.Clear();
+                Console.WriteLine("=========================");
+                Console.WriteLine(" Admin Menu:");
+                Console.WriteLine(" 1) Add User ");
+                Console.WriteLine(" 2) List All Users ");
+                Console.WriteLine(" 3) Logout");
+                Console.WriteLine("=========================");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        AdminFunctionAddUser();
+                        break;
+                    case "2":
+                        admin.AdminFunctionListAllUsers();
+                        Console.WriteLine("Press any key to return to the admin menu...");
+                        Console.ReadKey();
+                        break;
+                    case "3":
+                        currentUser = null;
+                        adminRun = false;
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Please Select a valid option!");
+                        break;
+                }
+            }
+            static void AdminFunctionAddUser()
+            {
+                Console.Clear();
+                Console.WriteLine("Enter username:");
+                string username = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(username))
+                {
+                    if (admin.GetUser(username) == null)
+                    {
+                        Console.WriteLine("Enter password:");
+                        string password = Console.ReadLine();
+
+                        if (!string.IsNullOrEmpty(password))
+                        {
+                            Console.WriteLine("Is this user an admin? (yes/no):");
+                            string isUserAdmin = Console.ReadLine();
+
+                            bool isAdmin = isUserAdmin.Equals("yes");
+
+                            var newUser = new User(username, password, isAdmin);
+                            admin.AddNewUser(newUser);
+
+                            Console.Clear();
+                            Console.WriteLine("=========================");
+                            Console.WriteLine($"User '{username}' registered successfully.");
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("=========================");
+                            Console.WriteLine("Password cannot be empty.");
+                        }
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("=========================");
+                        Console.WriteLine("Username is already taken.");
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("=========================");
+                    Console.WriteLine("Username cannot be empty.");
+                }
+                static void CallAdminLogout()
+                {
+                    Console.Clear();
+                    currentUser.SaveRecipes();
+                    currentUser = null;
+                    Console.WriteLine("Logged out successfully.");
+                }
+            }
+            static void CallAdminLogout()
+            {
+                Console.Clear();
+                currentUser = null;
+                Console.WriteLine("Logged out successfully.");
+            }
+        }        
     }
 }
