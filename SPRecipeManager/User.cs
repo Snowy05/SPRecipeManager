@@ -45,7 +45,18 @@ namespace SPRecipeManager
             string passwordVerify = PasswordHashMethod(password);
             return Password == passwordVerify;
         }
+        //Saving and Loading Recipes(PerUser)
+        public void LoadRecipes()
+        {
+            string filename = $"{Username}_recipes.txt";
+            UserRecipes.LoadFromFile(filename);
+        }
 
+        public void SaveRecipes()
+        {
+            string filename = $"{Username}_recipes.txt";
+            UserRecipes.SaveToFile(filename);
+        }
         //Admin inherits from the "General User"
     }
 
@@ -56,6 +67,7 @@ namespace SPRecipeManager
         public void AddNewUser(User user)
         {
             Users.Add(user);
+            SaveUsersToFile();
         }
 
         public void RemoveUser(User user) { }
@@ -103,17 +115,6 @@ namespace SPRecipeManager
                 }
             }
         }
-        //Saving and Loading Recipes(PerUser)
-        public void LoadRecipes()
-        {
-            string filename = $"{Username}_recipes.txt";
-            UserRecipes.LoadFromFile(filename);
-        }
 
-        public void SaveRecipes()
-        {
-            string filename = $"{Username}_recipes.txt";
-            UserRecipes.SaveToFile(filename);
-        }
     }
 }

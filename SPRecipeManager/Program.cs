@@ -16,15 +16,15 @@ namespace SPRecipeManager
         {
             admin.LoadUsersFromFile();
 
-            try
-            {
-                globalRecipes.LoadFromFile("global_recipes.txt");
-                Console.WriteLine("Global recipes loaded successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading global recipes: {ex.Message}");
-            }
+            //try
+            //{
+            //    globalRecipes.LoadFromFile("global_recipes.txt");
+            //    Console.WriteLine("Global recipes loaded successfully.");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"Error loading global recipes: {ex.Message}");
+            //}
             bool loginRun = true;
 
             while (loginRun)
@@ -161,6 +161,7 @@ namespace SPRecipeManager
                     //CallShoppingList(shoppingList);
                     break;
                 case "4":
+                    CallLogout();
                     break;
                 default: 
                     Console.WriteLine("Please select a valid option!");
@@ -288,6 +289,13 @@ namespace SPRecipeManager
                     }
                     Console.ReadKey();
                 }
+            }
+            static void CallLogout()
+            {
+                Console.Clear();
+                currentUser.SaveRecipes();
+                currentUser = null;
+                Console.WriteLine("Logged out successfully.");
             }
         }
     }
