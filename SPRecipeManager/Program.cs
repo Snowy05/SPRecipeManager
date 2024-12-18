@@ -313,8 +313,7 @@ namespace SPRecipeManager
                         AdminFunctionAddUser();
                         break;
                     case "2":
-                        admin.AdminFunctionListAllUsers();
-                        Console.WriteLine("Press any key to return to the admin menu...");
+                        AdminFunctionAllUsersMenu();
                         Console.ReadKey();
                         break;
                     case "3":
@@ -382,12 +381,37 @@ namespace SPRecipeManager
                     Console.WriteLine("Logged out successfully.");
                 }
             }
+            static void AdminFunctionAllUsersMenu()
+            {
+                admin.AdminFunctionListAllUsers();
+                AdminFunctionRemoveUser();
+
+
+            }
+            static void AdminFunctionRemoveUser()
+            {
+                Console.Write("Enter username to remove: ");
+                string username = Console.ReadLine();
+                User userToRemove = admin.GetUser(username);
+
+                if (userToRemove != null)
+                {
+                    admin.AdminFunctionRemoveUser(userToRemove);
+                    Console.WriteLine($"User {username} removed successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Username not found.");
+                }
+            }
+
             static void CallAdminLogout()
             {
                 Console.Clear();
                 currentUser = null;
                 Console.WriteLine("Logged out successfully.");
             }
+
         }        
     }
 }

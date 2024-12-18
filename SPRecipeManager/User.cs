@@ -78,7 +78,11 @@ namespace SPRecipeManager
             SaveUsersToFile();
         }
 
-        public void RemoveUser(User user) { }
+        public void AdminFunctionRemoveUser(User user)
+        {
+            Users.Remove(user);
+            SaveUsersToFile();
+        }
 
         public User GetUser(string username)
         {
