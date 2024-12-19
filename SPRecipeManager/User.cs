@@ -160,7 +160,7 @@ namespace SPRecipeManager
             return Users.Find(un => un.Username == username);
         }
         // Admin Request  Functions
-            public void FunctionReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
+        public void FunctionReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
             {
             Console.Clear();
             var requests = globalRecipeManager.GetAllRecipeRequests();
@@ -223,7 +223,7 @@ namespace SPRecipeManager
                     {
                         var parts = line.Split('|');
 
-                        // Add check to ensure we have the correct number of parts
+                        //ensure the correct number of parts
                         if (parts.Length == 3)
                         {
                             string username = parts[0];

@@ -9,7 +9,7 @@ namespace SPRecipeManager
 
     public class RecipeManager
     {
-        //Dictionary time complexity for lookups, can retrieve a recipe by its recipe number almost instantly
+        //Used dictionary for fast look ups for the recipes
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>();
         private int nextRecipeNumber = 1;
 
@@ -20,7 +20,7 @@ namespace SPRecipeManager
             return recipes.Values.ToList();
         }
 
-        //Displaying the recipe
+        //Displaying the recipe 
         public void DisplayAllRecipeNames()
         {
             Console.Clear();
@@ -29,11 +29,15 @@ namespace SPRecipeManager
                 Console.WriteLine($"Recipe #{recipe.RecipeNumber}: {recipe.RecipeName}");
             }
         }
+       
+        //retrieves a recipe based on the given recipe number
         public Recipe GetRecipe(int recipeNumber)
         {
             recipes.TryGetValue(recipeNumber, out var recipe);
             return recipe;
         }
+
+        //Recipe functions
         public void DisplayRecipe(int recipeNumber)
         {
             if (recipes.TryGetValue(recipeNumber, out var recipe))
@@ -48,6 +52,7 @@ namespace SPRecipeManager
                 Console.WriteLine("Recipe not found.");
             }
         }
+
         public void AddRecipe(string name, List<string> ingredients, string instructions)
         {
             Recipe recipe = new Recipe(nextRecipeNumber++, name, ingredients, instructions);
@@ -68,6 +73,7 @@ namespace SPRecipeManager
             return results;
         }
 
+        //Saving method and loading methods
         public void SaveToFile(string fileName = "recipes.txt")
         {
             using (StreamWriter writer = new StreamWriter(fileName))
@@ -79,9 +85,6 @@ namespace SPRecipeManager
             }
             Console.WriteLine("Recipes saved successfully.");
         }
-
-
-
         public void LoadFromFile(string fileName = "recipes.txt")
         {
             try

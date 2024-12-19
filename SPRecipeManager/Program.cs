@@ -24,7 +24,7 @@ namespace SPRecipeManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading global recipes: {ex.Message}");
+                Console.WriteLine($"Couldnt load global recipies: {ex.Message}");
             }
             
             bool loginRun = true;
@@ -144,7 +144,10 @@ namespace SPRecipeManager
         //Searching for recipes matching the key word given
         static void SearchGlobalRecipes()
         {
+
             Console.Clear();
+
+
             Console.WriteLine("================================");
             Console.Write("Enter a keyword to search for recipes: ");
             string keyword = Console.ReadLine();
@@ -153,10 +156,11 @@ namespace SPRecipeManager
 
             if (results.Any())
             {
+
                 Console.Clear();
                 Console.WriteLine("=========================");
                 Console.WriteLine("Search Results:");
-                foreach (var recipe in results) //Results 
+                foreach (var recipe in results)  
                 {
                     Console.WriteLine($"#{recipe.RecipeNumber}: {recipe.RecipeName}");
                 }
@@ -166,7 +170,8 @@ namespace SPRecipeManager
             {
                 Console.WriteLine("No recipes found matching your search.");
             }
-            Console.WriteLine("Press any key to return to the main menu...");
+            Console.WriteLine("Press any key to return");
+            //Option to look for allergenes or to sort out specific recipes
             Console.ReadKey();
         }
 
@@ -189,6 +194,7 @@ namespace SPRecipeManager
                 case "1":
                     currentUser.SubmitRecipeRequest(globalRecipes); 
                     break;
+
                 case "2":
                     AllUserRecipes(currentUser.UserRecipes);
                     break;
@@ -322,6 +328,17 @@ namespace SPRecipeManager
                 currentUser = null;
                 Console.WriteLine("Logged out successfully.");
             }
+
+
+            //static void ViewShoppingList(ShoppingList shoppingList){
+            //    Console.WriteLine("Shopping List:");
+            //    foreach (var item in shoppingList.Items)
+            //
+            //    {
+            //        Console.WriteLine($"- {item}");
+            //    }
+            //    Console.ReadKey();
+            //}
         }
 
         //Admin Menu
@@ -372,7 +389,9 @@ namespace SPRecipeManager
                 Console.WriteLine("Enter username:");
                 string username = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(username))
+                if 
+                    (!string.IsNullOrEmpty(username))
+
                 {
                     if (admin.GetUser(username) == null)
                     {
@@ -381,12 +400,15 @@ namespace SPRecipeManager
                         
                         if (!string.IsNullOrEmpty(password))//Admin should create whatever password they want. Weak or not.
                         {
-                            Console.WriteLine("Is this user an admin? (yes/no):");
+                            Console.WriteLine("Is this user an admin? (yes or no):");
+
+
                             string isUserAdmin = Console.ReadLine();//admin can create admin
 
                             bool isAdmin = isUserAdmin.Equals("yes");
 
                             var newUser = new User(username, password, isAdmin);
+
                             admin.AddNewUser(newUser);
 
                             Console.Clear();
@@ -410,12 +432,16 @@ namespace SPRecipeManager
                 else
                 {
                     Console.Clear();
+
                     Console.WriteLine("=========================");
                     Console.WriteLine("Username cannot be empty.");
                 }
                 static void CallAdminLogout()
                 {
+
                     Console.Clear();
+
+
                     currentUser.SaveRecipes();
                     currentUser = null;
                     Console.WriteLine("Logged out successfully.");
@@ -425,6 +451,8 @@ namespace SPRecipeManager
             static void AdminFunctionAllUsersMenu()
             {
                 Console.Clear();
+
+
                 admin.AdminFunctionListAllUsers();
                 AdminFunctionRemoveUser();
 
@@ -440,6 +468,7 @@ namespace SPRecipeManager
                 if (userToRemove != null)
                 {
                     admin.AdminFunctionRemoveUser(userToRemove);
+
                     Console.WriteLine($"User {username} removed successfully.");
                 }
                 else

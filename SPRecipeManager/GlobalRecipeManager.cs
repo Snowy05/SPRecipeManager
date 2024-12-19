@@ -8,7 +8,7 @@ namespace SPRecipeManager
 {
     public class GlobalRecipeManager
     {
-        //Dictionary time complexity for lookups, can retrieve a recipe by its recipe number almost instantly
+        // Chose this over a List because scalability with large datasets matters for future growth
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>(); //caching
         private List<Recipe> recipeRequests = new List<Recipe>();
 
@@ -65,10 +65,10 @@ namespace SPRecipeManager
         }
         //Recipe request section
         public void AddRecipeRequest(Recipe recipe)
-        {
-            recipeRequests.Add(recipe);
-            SaveRecipeRequestsToFile();
-        }
+            {
+                recipeRequests.Add(recipe);
+                SaveRecipeRequestsToFile();
+            }
         public List<Recipe> GetAllRecipeRequests()
         {
             return new List<Recipe>(recipeRequests);
@@ -78,8 +78,10 @@ namespace SPRecipeManager
             var recipe = recipeRequests.FirstOrDefault(r => r.RecipeNumber == recipeNumber);
             if (recipe != null)
             {
+
                 recipes[recipeNumber] = recipe;
                 recipeRequests.Remove(recipe);
+
                 SaveRecipesToFile();
                 SaveRecipeRequestsToFile();
             }
@@ -98,24 +100,26 @@ namespace SPRecipeManager
         public void SaveRecipesToFile()
         {
 
-            using (StreamWriter writer = new StreamWriter("global_recipes.txt"))
+            using (StreamWriter writer = new StreamWriter("global_recipes.txt"))//no need for try catch as it happens in main program
             {
                 foreach (var recipe in recipes.Values)
                 {
                     string ingredients = string.Join(",", recipe.Ingredients);
                     writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{ingredients}|{recipe.Instructions}");
+
                 }
             }
-            Console.WriteLine("Recipes saved successfully!");
+            Console.WriteLine("Recipes saved successfully");
         }
 
         public void SaveRecipeRequestsToFile()
         {
-            using (StreamWriter writer = new StreamWriter("recipe_requests.txt"))
+            using (StreamWriter writer = new StreamWriter("recipe_requests.txt"))//same here
             {
                 foreach (var recipe in recipeRequests)
                 {
                     string ingredients = string.Join(",", recipe.Ingredients);
+
                     writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{ingredients}|{recipe.Instructions}");
                 }
             }
@@ -131,8 +135,8 @@ namespace SPRecipeManager
                 while ((line = reader.ReadLine()) != null)
                 {
                     var parts = line.Split('|');
-                    if (parts.Length == 4)
-                    {
+                    if (parts.Length == 4) { 
+                    
                         int recipeNumber = int.Parse(parts[0]);
                         string recipeName = parts[1];
                         List<string> ingredients = parts[2].Split(',').ToList();
@@ -141,7 +145,7 @@ namespace SPRecipeManager
                     }
                     else
                     {
-                        Console.WriteLine("Invalid line format: " + line);
+                        Console.WriteLine("Invalid line format: " + line); // need to work on it
                     }
                 }
             }

@@ -13,7 +13,7 @@ namespace SPRecipeManager
         {
             foreach (char c in password)
             {
-                if (char.IsUpper(c))
+                if (char.IsUpper(c))// spacial letter as well?
                 {
                     return true;
                 }
@@ -23,7 +23,7 @@ namespace SPRecipeManager
 
         public static bool IsPasswordStrong(string password)
         {
-            if (IsUppercase(password) && password.Length > 8)
+            if (IsUppercase(password) && password.Length > 8) 
             {
                 return true;
             }
