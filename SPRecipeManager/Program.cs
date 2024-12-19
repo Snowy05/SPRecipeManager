@@ -130,14 +130,14 @@ namespace SPRecipeManager
                 {
                     Console.Clear();
                     Console.WriteLine("=========================");
-                    Console.WriteLine("Username is already taken.");
+                    Console.WriteLine("Username is already being used");
                 }
             }
             else
             {
                 Console.Clear();
                 Console.WriteLine("=========================");
-                Console.WriteLine("Username cannot be empty.");
+                Console.WriteLine("Username cannot be empty!");
             }
         }
         
@@ -145,6 +145,7 @@ namespace SPRecipeManager
         static void SearchGlobalRecipes()
         {
             Console.Clear();
+            Console.WriteLine("================================");
             Console.Write("Enter a keyword to search for recipes: ");
             string keyword = Console.ReadLine();
 
@@ -173,6 +174,7 @@ namespace SPRecipeManager
         static void CallUserMenu()
         {
             Console.Clear();
+            currentUser.LoadRecipes();
             Console.WriteLine("=========================");
             Console.WriteLine($" Welcome, {currentUser.Username}!");
             Console.WriteLine(" 1) Submit Recipe Request"); 
@@ -209,10 +211,7 @@ namespace SPRecipeManager
                 Console.WriteLine("What Would you like to do?");
                 Console.WriteLine(" 1) Add a new recipe");
                 Console.WriteLine(" 2) Delete a recipe");
-                Console.WriteLine(" 3) View a recipe");
-                Console.WriteLine(" 5) Search Recipe");
-                Console.WriteLine(" 6) Go back");
-
+                Console.WriteLine(" 3) Search Recipe");
                 Console.WriteLine("All Recipes:");
                 foreach (var recipe in recipeManager.GetAllRecipes())
                 {
@@ -224,22 +223,13 @@ namespace SPRecipeManager
                 {
                     case "1":
 
-                        AddRecipe(currentUser.UserRecipes);
+                        CallAddRecipe(currentUser.UserRecipes);
                         break;
                     case "2":
                         RemoveUserRecipe(currentUser.UserRecipes);
                         break;
                     case "3":
-                        Console.WriteLine();
-                        break;
-                    case "4":
-                        Console.WriteLine();
-                        break;
-                    case "5":
                         SearchRecipes(currentUser.UserRecipes);
-                        break;
-                    case "6":
-                        Console.WriteLine();
                         break;
                     default:
                         Console.WriteLine("Select a valid option!");
@@ -247,7 +237,7 @@ namespace SPRecipeManager
                 }
 
             }
-            static void AddRecipe(RecipeManager recipeManager)
+            static void CallAddRecipe(RecipeManager recipeManager)
             {
                 Console.Clear();
                 Console.Write("Enter recipe name: ");
@@ -328,6 +318,7 @@ namespace SPRecipeManager
             static void CallLogout()
             {
                 Console.Clear();
+                currentUser.SaveRecipes();
                 currentUser = null;
                 Console.WriteLine("Logged out successfully.");
             }

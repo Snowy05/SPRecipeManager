@@ -8,6 +8,7 @@ namespace SPRecipeManager
 {
     public class GlobalRecipeManager
     {
+        //Dictionary time complexity for lookups, can retrieve a recipe by its recipe number almost instantly
         private Dictionary<int, Recipe> recipes = new Dictionary<int, Recipe>(); //caching
         private List<Recipe> recipeRequests = new List<Recipe>();
 
@@ -33,14 +34,14 @@ namespace SPRecipeManager
                         }
                         else
                         {
-                            Console.WriteLine("Invalid line format: " + line);
+                            Console.WriteLine("Invalid line format at: " + line);
                         }
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Recipe file not found.");
+                Console.WriteLine("recipe file not found");
             }
 
         }
