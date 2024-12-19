@@ -55,21 +55,40 @@ namespace SPRecipeManager
 
         // Users submission method to Globalrecipies
         public void SubmitRecipeRequest(GlobalRecipeManager globalRecipeManager)
+        {
+            var curseWordChecker = new CurseWordChecker();
+            Console.Clear();
+
+            Console.WriteLine("Enter the recipe name:");
+            string recipeName = Console.ReadLine();
+
+            if (curseWordChecker.ContainsCurseWords(recipeName))
             {
-                Console.WriteLine("Enter the recipe name:");
-                string recipeName = Console.ReadLine();
-
-                Console.WriteLine("Enter the ingredients (comma-separated):");
-                List<string> ingredients = Console.ReadLine().Split(',').Select(ingredient => ingredient.Trim()).ToList();
-
-                Console.WriteLine("Enter the instructions:");
-                string instructions = Console.ReadLine();
-
-                var newRecipeRequest = new Recipe(globalRecipeManager.GetNextRecipeNumber(), recipeName, ingredients, instructions);
-                globalRecipeManager.AddRecipeRequest(newRecipeRequest);
-
-                Console.WriteLine("Recipe request submitted for admin approval.");
+                Console.WriteLine("Recipe name is inappropriate");
+                Console.WriteLine("Press enter to continue.");
+                Console.ReadLine();
+                return;
             }
+
+            Console.WriteLine("Enter the ingredients (comma-separated):");
+            List<string> ingredients = Console.ReadLine().Split(',').Select(ingredient => ingredient.Trim()).ToList();
+
+            Console.WriteLine("Enter the instructions:");
+            string instructions = Console.ReadLine();
+
+            if (curseWordChecker.ContainsCurseWords(instructions))
+            {
+                Console.WriteLine("Recipe instructions might contain inappropriate language");
+                Console.WriteLine("Press enter to continue.");
+                Console.ReadLine();
+                return;
+            }
+
+            var newRecipeRequest = new Recipe(globalRecipeManager.GetNextRecipeNumber(), recipeName, ingredients, instructions);
+            globalRecipeManager.AddRecipeRequest(newRecipeRequest);
+
+            Console.WriteLine("Recipe request submitted for admin approval.");
+        }
 
 
         // Saving and Loading Recipes (Per User)
@@ -112,7 +131,8 @@ namespace SPRecipeManager
         //Admin Request Functions
             public void FunctionReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
             {
-                var requests = globalRecipeManager.GetAllRecipeRequests();
+            Console.Clear();
+            var requests = globalRecipeManager.GetAllRecipeRequests();
                 if (requests.Count == 0)
                 {
                     Console.WriteLine("No pending recipe requests.");

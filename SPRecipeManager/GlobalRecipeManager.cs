@@ -105,7 +105,7 @@ namespace SPRecipeManager
                     writer.WriteLine($"{recipe.RecipeNumber}|{recipe.RecipeName}|{ingredients}|{recipe.Instructions}");
                 }
             }
-            Console.WriteLine("Recipes saved successfully.");
+            Console.WriteLine("Recipes saved successfully!");
         }
 
         public void SaveRecipeRequestsToFile()

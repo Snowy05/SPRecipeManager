@@ -85,27 +85,40 @@ namespace SPRecipeManager
 
         public void LoadFromFile(string fileName = "recipes.txt")
         {
-
-            using (StreamReader reader = new StreamReader(fileName))
+            try
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                using (StreamReader reader = new StreamReader(fileName))
                 {
-                    var parts = line.Split('|');
-                    int recipeNumber = int.Parse(parts[0]);
-                    string recipeName = parts[1];
-                    List<string> ingredients = new List<string>(parts[2].Split(','));
-                    string instructions = parts[3];
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length >= 4)
+                        {
+                            int recipeNumber = int.Parse(parts[0]);
+                            string recipeName = parts[1];
+                            List<string> ingredients = new List<string>(parts[2].Split(','));
+                            string instructions = parts[3];
 
-                    recipes.Add(recipeNumber, new Recipe(recipeNumber, recipeName, ingredients, instructions));
-                }
+                            recipes.Add(recipeNumber, new Recipe(recipeNumber, recipeName, ingredients, instructions));
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid recipe format in line: {line}");
+                        }
+                    }
 
-                if (recipes.Count > 0)
-                {
-                    nextRecipeNumber = recipes.Keys.Max() + 1;
+                    if (recipes.Count > 0)
+                    {
+                        nextRecipeNumber = recipes.Keys.Max() + 1;
+                    }
                 }
+                Console.WriteLine("Recipes loaded successfully.");
             }
-            Console.WriteLine("Recipes loaded successfully.");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while loading recipes: {ex.Message}");
+            }
         }
 
 

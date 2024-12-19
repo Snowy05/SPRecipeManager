@@ -358,11 +358,13 @@ namespace SPRecipeManager
                         Console.ReadKey();
                         break;
                     case "3":
+                        Console.Clear();
                         admin.FunctionReviewRecipeRequests(globalRecipes); 
                         Console.WriteLine("Press any key to return to the admin menu..."); 
                         Console.ReadKey();
                         break ;
                     case "4":
+                        Console.Clear();
                         currentUser = null;
                         adminRun = false;
                         break;
@@ -428,13 +430,16 @@ namespace SPRecipeManager
                     Console.WriteLine("Logged out successfully.");
                 }
             }
+            //List all users
             static void AdminFunctionAllUsersMenu()
             {
+                Console.Clear();
                 admin.AdminFunctionListAllUsers();
                 AdminFunctionRemoveUser();
 
 
             }
+            //Remove user function
             static void AdminFunctionRemoveUser()
             {
                 Console.Write("Enter username to remove: ");
