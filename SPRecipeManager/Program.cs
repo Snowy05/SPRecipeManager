@@ -89,7 +89,7 @@ namespace SPRecipeManager
             if (currentUser != null && currentUser.PasswordVerification(password))
             {
                 currentUser.LoadRecipes();
-                Console.WriteLine($"Welcome, {username}");
+                Console.WriteLine($"Welcome {username}");
             }
             else
             {

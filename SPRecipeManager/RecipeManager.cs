@@ -117,7 +117,7 @@ namespace SPRecipeManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while loading recipes: {ex.Message}");
+                Console.WriteLine($"Error while loading recipes: {ex.Message}");
             }
         }
 

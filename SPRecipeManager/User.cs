@@ -15,7 +15,7 @@ namespace SPRecipeManager
         public bool IsAdmin { get; set; }
         public RecipeManager UserRecipes { get; set; } = new RecipeManager();
 
-        // Constructor for new users with the already hashed password
+        //Constructor for new users with the already hashed password
         public User(string username, string password, bool isAdmin)
         {
             Username = username;
@@ -23,7 +23,7 @@ namespace SPRecipeManager
             IsAdmin = isAdmin;
         }
 
-        // Constructor loading users from file
+        //constructor loading users from file
         public User(string username, string hashedPassword, bool isAdmin, bool isHashedPassword)
         {
             Username = username;
@@ -53,7 +53,7 @@ namespace SPRecipeManager
             return Password == passwordVerify;
         }
 
-        // Users submission method to Globalrecipies
+        //users submission method to Globalrecipies
         public void SubmitRecipeRequest(GlobalRecipeManager globalRecipeManager)
         {
             var curseWordChecker = new CurseWordChecker();
@@ -62,23 +62,54 @@ namespace SPRecipeManager
             Console.WriteLine("Enter the recipe name:");
             string recipeName = Console.ReadLine();
 
-            if (curseWordChecker.ContainsCurseWords(recipeName))
+            //check if the recipe name is empty
+            if (string.IsNullOrWhiteSpace(recipeName))
             {
-                Console.WriteLine("Recipe name is inappropriate");
+                Console.WriteLine("Recipe name cannot be empty.");
                 Console.WriteLine("Press enter to continue.");
                 Console.ReadLine();
                 return;
             }
 
+            //Check if the recipe name contains curse words
+            if (curseWordChecker.ContainsCurseWords(recipeName))
+            {
+                Console.WriteLine("Recipe name is inappropriate.");
+                Console.WriteLine("Press enter to continue.");
+                Console.ReadLine();
+                return;
+            }
+
+            //get the ingredients
             Console.WriteLine("Enter the ingredients (comma-separated):");
             List<string> ingredients = Console.ReadLine().Split(',').Select(ingredient => ingredient.Trim()).ToList();
 
+            //check if the ingredients list is empty
+            if (ingredients.Count == 0 || ingredients.All(string.IsNullOrWhiteSpace))
+            {
+                Console.WriteLine("Ingredients cannot be empty.");
+                Console.WriteLine("Press enter to continue.");
+                Console.ReadLine();
+                return;
+            }
+
+            //instructions
             Console.WriteLine("Enter the instructions:");
             string instructions = Console.ReadLine();
 
+            //check if the instructions are empty
+            if (string.IsNullOrWhiteSpace(instructions))
+            {
+                Console.WriteLine("Recipe instructions cannot be empty.");
+                Console.WriteLine("Press enter to continue.");
+                Console.ReadLine();
+                return;
+            }
+
+            //check if the instructions contain curse words
             if (curseWordChecker.ContainsCurseWords(instructions))
             {
-                Console.WriteLine("Recipe instructions might contain inappropriate language");
+                Console.WriteLine("Recipe instructions might contain inappropriate language.");
                 Console.WriteLine("Press enter to continue.");
                 Console.ReadLine();
                 return;
@@ -91,7 +122,7 @@ namespace SPRecipeManager
         }
 
 
-        // Saving and Loading Recipes (Per User)
+        //Saving and Loading Recipes 
         public void LoadRecipes()
         {
             string filename = $"{Username}_recipes.txt";
@@ -128,7 +159,7 @@ namespace SPRecipeManager
         {
             return Users.Find(un => un.Username == username);
         }
-        //Admin Request Functions
+        // Admin Request  Functions
             public void FunctionReviewRecipeRequests(GlobalRecipeManager globalRecipeManager)
             {
             Console.Clear();
@@ -214,6 +245,7 @@ namespace SPRecipeManager
             }
         }
 
+        //lisitng all users for admin
         public void AdminFunctionListAllUsers()
         {
             Console.Clear();
